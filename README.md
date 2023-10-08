@@ -1,1 +1,2 @@
-# 100xDev_FullStackCohort
+# FullStack_Projects
+    This repo contains Full Stack Projects
