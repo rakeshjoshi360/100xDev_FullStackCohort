@@ -18,7 +18,7 @@ const authJwtAdmin = (req, res, next) => {
   }
 }
 
-module.exports({
+module.exports = {
     authJwtAdmin,
     secretKeyAdmin
-})
+}
