@@ -18,6 +18,7 @@ import axios from "axios";
 import { BASE_URL } from '../config';
 import { useSetRecoilState } from 'recoil';
 import { userState } from '../store/atoms/user';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 function Copyright(props) {
     const navigate = useNavigate()
@@ -33,14 +34,16 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function Signup() {
     const navigate = useNavigate()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [profilePic, setProfilePic] = useState("");
+    const [role, setRole] = useState("")
     const setUser = useSetRecoilState(userState)
 
   return (
@@ -63,6 +66,23 @@ export default function Signup() {
           </Typography>
           <Box sx={{ mt: 3 }}>
             <Grid container spacing={2}>
+              <Grid item xs={12}>
+              <FormControl fullWidth required>
+                <InputLabel id="roleType">Account Type</InputLabel>
+                <Select
+                  labelId="roleType"
+                  id="role"
+                  value={role}
+                  label="Account Type"
+                  onChange={(e) => {
+                    setRole(e.target.value)
+                  }}
+                >
+                  <MenuItem value={"admin"}>Admin</MenuItem>
+                  <MenuItem value={"user"}>User</MenuItem>
+                </Select>
+              </FormControl>
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
@@ -72,6 +92,9 @@ export default function Signup() {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  onChange={(e) => {
+                    setFirstName(e.target.value)
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -82,6 +105,9 @@ export default function Signup() {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                  onChange={(e) => {
+                    setLastName(e.target.value)
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -111,28 +137,54 @@ export default function Signup() {
                   autoComplete="new-password"
                 />
               </Grid>
-              {/* <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  id="profilePic"
+                  label="Profile Picture"
+                  name="profilePic"
+                  autoComplete="profilePic"
+                  onChange={(e) => {
+                    setProfilePic(e.target.value)
+                  }}
                 />
-              </Grid> */}
+              </Grid>
             </Grid>
             <Button
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               onClick = {async() => {
-                const res = await axios.post(`${BASE_URL}/admin/signup`, {
-                  username: email,
-                  password: password
-                }, {
-                  headers: {
-                    "Content-type": "application/json"}
-                })
-                const data = res.data
-                localStorage.setItem("token", data.token)
-                setUser({userEmail: email, isLoading: false})
+                if(role === "admin"){
+                  const res = await axios.post(`${BASE_URL}/admin/signup`, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    username: email,
+                    password: password,
+                    profilePic: profilePic,
+                    role: role,
+                  }, {
+                    headers: {
+                      "Content-type": "application/json"}
+                  }) 
+                  const data = res.data
+                  localStorage.setItem("token", data.token)
+                }else{
+                  const res = await axios.post(`${BASE_URL}/user/signup`, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    username: email,
+                    password: password,
+                    profilePic: profilePic,
+                    role: role,
+                  }, {
+                    headers: {
+                      "Content-type": "application/json"}
+                  })
+                  const data = res.data
+                  localStorage.setItem("token", data.token)
+                }
+                setUser({userEmail: email, isLoading: false, role: role})
                 navigate("/")
               }}
             >

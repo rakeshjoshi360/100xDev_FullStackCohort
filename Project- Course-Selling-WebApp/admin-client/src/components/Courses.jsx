@@ -6,14 +6,14 @@ import axios from "axios";
 
 function Courses(){
     const [courses, setCourses] = useState([]);
-
+    
     const init = async() => {
-        const response = await axios.get(`${BASE_URL}/admin/courses`, {
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            }
-        })
-        setCourses(response.data.courses)
+            const response = await axios.get(`${BASE_URL}/admin/courses`, {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            })
+            setCourses(response.data.courses)
     }
 
     useEffect(() => {
@@ -21,7 +21,7 @@ function Courses(){
     }, []);
 
     return (
-        <div style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>  
+        <div style={{display: "flex", flexWrap: "wrap", justifyContent: "center", minHeight: "100vh", width: "100vw", backgroundColor: "#eeeeee" }}>  
             {courses.map(course => {
                 return <Course course={course} key={course._id}/>
             })}
@@ -35,15 +35,20 @@ export function Course({course}){
         margin: 10,
         width: 300,
         minHeight: 200,
-        padding: 20
+        padding: 20,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between"
     }}>
         <img src= {course.imageLink} style={{width: 300}}/>
+        <div>
         <Typography textAlign={"center"} variant="h5">{course.title}</Typography>
         <Typography textAlign={"center"} variant="subtitle1" style={{color: "gray"}}>{course.description}</Typography>
         <div style={{display: "flex", justifyContent: "center", marginTop: 20}}>
             <Button variant="contained" size="large" onClick={() => {
                 navigate("/course/" + course._id);
             }}>Edit</Button>
+        </div>
         </div>
     </Card>
 }

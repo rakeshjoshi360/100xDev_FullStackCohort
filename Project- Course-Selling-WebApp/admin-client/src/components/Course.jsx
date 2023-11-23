@@ -13,20 +13,34 @@ import {
   isCourseLoading,
   courseImage,
 } from "../store/selectors/course";
+import { userRoleState } from "../store/selectors/userRole";
+
 
 function Course() {
   const { courseId } = useParams();
   let setCourse = useSetRecoilState(courseState);
   const courseLoading = useRecoilValue(isCourseLoading);
   const [selectedCourse, setSelectedCourse] = useState({});
+  const userRole = useRecoilValue(userRoleState)
   const init = async () => {
-    const resp = await axios.get(`${BASE_URL}/admin/course/${courseId}`, {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    });
-    setSelectedCourse(resp.data.course);
-    setCourse({ isLoading: false, course: resp.data.course });
+    if(userRole === "admin"){
+      const resp = await axios.get(`${BASE_URL}/admin/course/${courseId}`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      });
+      setSelectedCourse(resp.data.course);
+      setCourse({ isLoading: false, course: resp.data.course });
+    }else{
+      const resp = await axios.get(`${BASE_URL}/user/course/${courseId}`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      });
+      setSelectedCourse(resp.data.course);
+      setCourse({ isLoading: false, course: resp.data.course });
+    }
+    
   };
 
   useEffect(() => {
@@ -86,12 +100,14 @@ function GrayTopper() {
 }
 function UpdateCard(props) {
   const [courseDetails, setCourseDetails] = useRecoilState(courseState);
+  const userRole = useRecoilValue(userRoleState)
 
   const [title, setTitle] = useState("");
 
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
   const [price, setPrice] = useState("");
+  
 
   useEffect(() => {
     if (props.selectedCourse) {
@@ -99,13 +115,14 @@ function UpdateCard(props) {
       setDescription(props.selectedCourse.description);
       setImage(props.selectedCourse.imageLink);
       setPrice(props.selectedCourse.price);
-      setReload(true);
+
     }
   }, [props.selectedCourse]);
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <Card varint={"outlined"} style={{ maxWidth: 600, marginTop: 200 }}>
-        <div style={{ padding: 20 }}>
+        {userRole === "admin" ? 
+          <div style={{ padding: 20 }}>
           <Typography style={{ marginBottom: 10 }}>
             Update Course Details
           </Typography>
@@ -185,15 +202,28 @@ function UpdateCard(props) {
           >
             Update Course
           </Button>
-        </div>
+          </div> : 
+          <div style={{ padding: 20 }}>
+          <Typography variant={"h5"} style={{ marginBottom: 10 }}>
+            Course Details
+          </Typography>
+          <Typography style={{ marginBottom: 10 }}>
+            Course Name: {title}
+          </Typography>
+          <Typography style={{ marginBottom: 10 }}>
+            Course Details: {description}
+          </Typography>
+          <Typography style={{ marginBottom: 10 }}>
+            Price: Rs. {price}/-
+          </Typography>
+          </div>
+        }
       </Card>
     </div>
   );
 }
-function CourseCard(props) {
-  const imageLink = useRecoilValue(courseImage);
-  const title = useRecoilValue(courseTitle);
-  const price = useRecoilValue(coursePrice);
+
+function CourseCard() {
   return (
     <div
       style={{
@@ -234,7 +264,7 @@ function Price() {
   const price = useRecoilValue(coursePrice);
   return (
     <Typography variant="subtitle1">
-      <b>Rs {price} </b>
+      <b>Rs {price}/-</b>
     </Typography>
   );
 }

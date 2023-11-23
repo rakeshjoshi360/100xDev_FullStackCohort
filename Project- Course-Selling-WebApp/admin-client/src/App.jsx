@@ -11,16 +11,14 @@ import axios from "axios";
 import { BASE_URL } from "./config";
 import { useEffect } from "react";
 import Course from "./components/Course";
+import AllCourses from "./components/user/AllCourses";
+import PurchasedCourse from "./components/user/PurchasedCourse";
 
 function App() {
 
   return (
     <RecoilRoot>
-      <div style={{
-        height: "100vh",
-        width: "100vw",
-        backgroundColor: "#eeeeee"
-      }}>
+      <div>
         <Router>
           <Appbar />
           <InitUser />
@@ -31,6 +29,8 @@ function App() {
               <Route path={"/courses"} element = {<Courses />} />
               <Route path= {"/addcourse"} element = {<AddCourse />} />
               <Route path= {"/course/:courseId"} element = {<Course />} />
+              <Route path= {"/allcourses"} element = {<AllCourses />} />
+              <Route path= {"/courses/purchased"} element = {<PurchasedCourse />}/>
           </Routes>
         </Router>
       </div>
@@ -42,26 +42,42 @@ function InitUser() {
   const setUser = useSetRecoilState(userState)
   const init = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/admin/me`, {
+      const adminResponse = await axios.get(`${BASE_URL}/admin/me`, {
         headers: {
           "Authorization": "Bearer " + localStorage.getItem("token")
         }
       })
-      if(response.data.username){
+      if(adminResponse.data.username){
         setUser({
           isLoading: false,
-          userEmail: response.data.username
+          userEmail: adminResponse.data.username,
+          role: adminResponse.data.role
+        })
+        return
+      }
+      const userResponse = await axios.get(`${BASE_URL}/user/me`,{
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+      })
+      if(userResponse.data.username){
+        setUser({
+          isLoading: false,
+          userEmail: userResponse.data.username,
+          role: userResponse.data.role
         })
       }else{
         setUser({
           isLoading: false,
-          userEmail: null
+          userEmail: null,
+          role: "user"
         })  
       }
     } catch (error) {
       setUser({
         isLoading: false,
-        userEmail: null
+        userEmail: null,
+        role: "user"
       })
     }
   }
