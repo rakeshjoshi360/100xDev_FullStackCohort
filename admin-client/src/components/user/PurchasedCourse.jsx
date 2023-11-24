@@ -19,7 +19,7 @@ function PurchasedCourse(){
     }, [])
     return(
         <div style={{
-            height: "100vh",
+            minHeight: "100vh",
             width: "100vw",
             backgroundColor: "#eeeeee"
           }}>

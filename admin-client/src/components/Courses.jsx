@@ -21,10 +21,16 @@ function Courses(){
     }, []);
 
     return (
-        <div style={{display: "flex", flexWrap: "wrap", justifyContent: "center", minHeight: "100vh", width: "100vw", backgroundColor: "#eeeeee" }}>  
+        <div style={{
+            minHeight: "100vh",
+            width: "100vw",
+            backgroundColor: "#eeeeee"
+          }}>
+        <div style={{display: "flex", flexWrap: "wrap", justifyContent: "center" }}>  
             {courses.map(course => {
                 return <Course course={course} key={course._id}/>
             })}
+        </div>
         </div>
     )
 }
