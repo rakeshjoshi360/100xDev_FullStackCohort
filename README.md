@@ -42,6 +42,7 @@ To run the project locally, follow these steps:
             vi nano .env
         2. Replace the placeholder values with your actual database credentials.(MongoDB username,password; JWT admin secret, user secret; Port)
         3. Save the `.env` file
+        4. Remove path object from `dotenv.config()` from both `server/index.js` and `server/middleware/auth.js`
     - Update `BASE_URL` in `/admin-client/cofig.js` accordingly.
 
 4. **Start the development server:**
