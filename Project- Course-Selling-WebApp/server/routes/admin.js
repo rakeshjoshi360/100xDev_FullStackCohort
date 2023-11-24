@@ -1,5 +1,5 @@
 const express = require('express')
-const {Admin, Course} = require("../db")
+const {Admin, Course, PurchasedCourse} = require("../db")
 const jwt = require('jsonwebtoken')
 const { secretKeyAdmin } = require("../middleware/auth")
 const { authJwtAdmin } = require("../middleware/auth")
@@ -70,12 +70,26 @@ router.get("/courses", authJwtAdmin, async(req,res) => {
     const adminId = admin._id
     const courses = await Course.find({ admin: adminId });
     res.status(200).json({courses})
-    console.log('Authenticated user:', req.user);
   })
   
 router.get("/course/:courseId", authJwtAdmin, async(req,res) => {
     const courseId = req.params.courseId
     const course = await Course.findById(courseId);
     res.status(200).json({course})
+})
+
+router.delete("/course/:courseId", authJwtAdmin, async(req,res) => {
+  const courseId = req.params.courseId;
+  const course = await Course.findById(courseId)
+  if(!course){
+    return res.status(404).json({ message: 'Course not found' });
+  }
+  const admin = await Admin.findOne({username: req.user.username})
+  if (!admin || !course.admin.equals(admin._id)) {
+    return res.status(403).json({ message: 'Permission denied' });
+  }
+  await Course.findByIdAndDelete(courseId);
+  await PurchasedCourse.deleteMany({ courseId });
+  res.status(200).json({ message: 'Course deleted successfully' });
 })
 module.exports = router

@@ -18,6 +18,7 @@ import axios from "axios";
 import { BASE_URL } from '../config';
 import { useSetRecoilState } from 'recoil';
 import { userState } from '../store/atoms/user';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 function Copyright(props) {
     const navigate = useNavigate()
@@ -33,8 +34,6 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function Signin() {
@@ -42,16 +41,8 @@ export default function Signin() {
   const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [role, setRole] = useState("")
   const setUser = useSetRecoilState(userState)
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   console.log({
-  //     email: data.get('email'),
-  //     password: data.get('password'),
-  //   });
-  // };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -71,8 +62,22 @@ export default function Signin() {
           <Typography component="h1" variant="h5">
             Welcome Back
           </Typography>
-          {/* onSubmit={handleSubmit} */}
           <Box sx={{ mt: 1 }}>
+              <FormControl fullWidth required>
+                <InputLabel id="roleType">Account Type</InputLabel>
+                <Select
+                  labelId="roleType"
+                  id="role"
+                  value={role}
+                  label="Account Type"
+                  onChange={(e) => {
+                    setRole(e.target.value)
+                  }}
+                >
+                  <MenuItem value={"admin"}>Admin</MenuItem>
+                  <MenuItem value={"user"}>User</MenuItem>
+                </Select>
+              </FormControl>
             <TextField
               onChange={(e) => {
                 setEmail(e.target.value)
@@ -105,17 +110,30 @@ export default function Signin() {
             />
             <Button
               onClick={async () => {
-                const res = await axios.post(`${BASE_URL}/admin/signin`, {
-                  username: email,
-                  password: password
-                }, {
-                  headers: {
-                    "Content-type": "application/json"
-                  }
-                });
-                const data = res.data
-                localStorage.setItem("token", data.token)
-                setUser({userEmail: email, isLoading: false})
+                if(role === "admin"){
+                  const res = await axios.post(`${BASE_URL}/admin/signin`, {
+                    username: email,
+                    password: password
+                  }, {
+                    headers: {
+                      "Content-type": "application/json"
+                    }
+                  });
+                  const data = res.data
+                  localStorage.setItem("token", data.token)
+                }else{
+                  const res = await axios.post(`${BASE_URL}/user/signin`, {
+                    username: email,
+                    password: password
+                  }, {
+                    headers: {
+                      "Content-type": "application/json"
+                    }
+                  });
+                  const data = res.data
+                  localStorage.setItem("token", data.token)
+                }
+                setUser({userEmail: email, isLoading: false, role: role})
                 navigate("/")
               }}
               fullWidth
@@ -126,9 +144,9 @@ export default function Signin() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="" variant="body2">
+                {/* <Link href="" variant="body2">
                   Forgot password?
-                </Link>
+                </Link> */}
               </Grid>
               <Grid item>
                 <Link style={{cursor: "pointer"}} onClick = {() => {navigate("/signup")}} variant="body2">

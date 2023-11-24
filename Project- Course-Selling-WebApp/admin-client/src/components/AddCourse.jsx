@@ -4,11 +4,13 @@ import {Card, Typography} from "@mui/material";
 import {useState} from "react";
 import axios from "axios";
 import { BASE_URL } from "../config.js"
+import { useNavigate } from "react-router-dom";
 function AddCourse(){
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
     const [price, setPrice] = useState(0);
+    const navigate = useNavigate()
 
     return(
         <div style={{display: "flex", justifyContent: "center", minHeight: "80vh", flexDirection: "column",
@@ -65,7 +67,7 @@ function AddCourse(){
                     variant="contained"
                     size={"large"}
                     onClick={async() => {
-                        await axios.post(`${BASE_URL}/admin/courses`, {
+                        const res = await axios.post(`${BASE_URL}/admin/courses`, {
                             title: title,
                             description: description,
                             imageLink: image,
@@ -76,7 +78,9 @@ function AddCourse(){
                                 "Authorization": "Bearer " + localStorage.getItem("token")
                             }
                         });
-                        alert("Added Courses!");
+                        const data = res.data
+                        alert(data.message);
+                        navigate('/courses')
                     }}
                 >Add Course
                 </Button>

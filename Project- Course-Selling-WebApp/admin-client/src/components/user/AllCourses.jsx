@@ -42,7 +42,10 @@ function AllCourses(){
 export function Course({course, purchasedCourse}){
     const navigate = useNavigate()
     const isCoursePurchased = (courseid) => {
-        return purchasedCourse.some((course) => course.courseId._id === courseid);
+        return 
+        purchasedCourse && purchasedCourse.some(
+            (course) => course.courseId && course.courseId._id === courseid
+        );
     };
 
     return <Card key={course.id} style={{

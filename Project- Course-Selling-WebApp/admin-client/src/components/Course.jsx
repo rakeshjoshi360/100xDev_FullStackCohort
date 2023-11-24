@@ -1,6 +1,6 @@
 import { Card, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Typography, TextField, Button } from "@mui/material";
 import axios from "axios";
 import { Loading } from "./Loading";
@@ -107,6 +107,7 @@ function UpdateCard(props) {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
   const [price, setPrice] = useState("");
+  const navigate = useNavigate()
   
 
   useEffect(() => {
@@ -202,6 +203,24 @@ function UpdateCard(props) {
           >
             Update Course
           </Button>
+          <Button
+              variant="contained"
+              size={"large"}
+              style={{ marginLeft: 10 }}
+              color="error"
+              onClick={async() => {
+                const res = await axios.delete(`${BASE_URL}/admin/course/${courseDetails.course._id}`,{
+                  headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                  }
+                })
+                const data = res.data
+                alert(data.message)
+                navigate('/courses')
+              }}
+            >
+              Delete Course
+            </Button>
           </div> : 
           <div style={{ padding: 20 }}>
           <Typography variant={"h5"} style={{ marginBottom: 10 }}>
