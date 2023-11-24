@@ -68,3 +68,7 @@ Contributions to Coursify are welcome! If you find any issues or have ideas for 
 
 - **Material UI:** For providing a beautiful and responsive UI.
 - **JWT:** For secure user authentication.
+
+## Demo
+
+It is live at Vercel: [CoursEd. Demo]("https://course-ed.vercel.app")
