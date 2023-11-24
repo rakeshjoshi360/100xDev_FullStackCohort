@@ -23,7 +23,7 @@ To run the project locally, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone <HTTPS URL of this repo>
+   git clone https://github.com/your_username/CourseEd..git
    cd Project-\ Course-Selling-WebApp
 2. **Install dependencies for both frontend and backend:**
     ```bash
@@ -42,6 +42,7 @@ To run the project locally, follow these steps:
             vi nano .env
         2. Replace the placeholder values with your actual database credentials.(MongoDB username,password; JWT admin secret, user secret; Port)
         3. Save the `.env` file
+    - Update `BASE_URL` in `/admin-client/cofig.js` accordingly.
 
 4. **Start the development server:**
     ```bash
@@ -50,7 +51,7 @@ To run the project locally, follow these steps:
     cd admin-client
     npm run dev
 
-5. Open your browser and visit `http://localhost:5173/` to access the application. And the backend is running on the Port from `.env`
+5. Open your browser and visit `http://localhost:5173/` to access the application. And the backend is running on the Port from `.env` or 3000(default).
 
 ## Future Enhancements
 
@@ -67,7 +68,3 @@ Contributions to Coursify are welcome! If you find any issues or have ideas for 
 
 - **Material UI:** For providing a beautiful and responsive UI.
 - **JWT:** For secure user authentication.
-
-## Demo
-
-It is live at Vercel: [CoursEd. Demo]()
