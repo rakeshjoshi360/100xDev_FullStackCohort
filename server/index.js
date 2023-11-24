@@ -7,7 +7,7 @@ const dotenv = require('dotenv')
 
 const app = express()
 const port = process.env.PORT
-dotenv.config();
+dotenv.config({ path: '/home/ubuntu/.env' });
 
 app.use(cors());
 app.use(express.json())

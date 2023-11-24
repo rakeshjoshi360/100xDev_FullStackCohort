@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
-dotenv.config();
+dotenv.config({ path: '/home/ubuntu/.env' });
 
 const secretKeyAdmin = process.env.ADMIN_KEY
 const secretKeyUser = process.env.USER_KEY
